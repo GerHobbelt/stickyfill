@@ -135,8 +135,7 @@
         if (!el.clone) clone(el);
         if (el.parent.computed.position != 'absolute' &&
             el.parent.computed.position != 'relative' &&
-            el.parent.tagName != 'BODY' &&
-            el.parent.tagName){
+            el.parent.node.tagName != 'BODY'){ 
 						 	el.parent.node.style.position = 'relative';
 						}
 
