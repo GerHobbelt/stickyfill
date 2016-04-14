@@ -1,6 +1,6 @@
 /*!
  * Stickyfill -- `position: sticky` polyfill
- * v. 1.1.4 | https://github.com/wilddeer/stickyfill
+ * v. 1.1.5-0 | https://github.com/wilddeer/stickyfill
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * MIT License
@@ -194,6 +194,7 @@
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
+                nodeStyle.willChange = 'position';
                 break;
 
             case 1:
@@ -206,6 +207,7 @@
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
+                nodeStyle.willChange = 'auto';
                 break;
 
             case 2:
@@ -217,6 +219,7 @@
                 nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
+                nodeStyle.willChange = 'position';
                 break;
         }
 
