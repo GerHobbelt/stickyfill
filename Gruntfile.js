@@ -66,6 +66,17 @@ module.exports = function(grunt) {
                     hostname: '*'
                 }
             }
+        },
+
+        'update_json': {
+            options: {
+                indent: '  '
+            },
+            bower: {
+                src: 'package.json',
+                dest: 'bower.json',
+                fields: 'version'
+            }
         }
     });
 
@@ -76,6 +87,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-update-json');
     grunt.registerTask('build', ['uglify', 'concat']);
     grunt.registerTask('release', ['bump-only:patch', 'uglify', 'concat', 'bump-commit', 'shell:push', 'shell:pushTags']);
     grunt.registerTask('w', ['connect', 'build', 'watch']);

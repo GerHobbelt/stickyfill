@@ -13,7 +13,8 @@
   },
   "main": "dist/stickyfill.js",
   "scripts": {
-    "grunt": "grunt"
+    "grunt": "grunt",
+    "version": "grunt update_json && grunt build && git add -A"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -23,6 +24,7 @@
     "grunt-contrib-connect": "~0.10.1",
     "grunt-contrib-uglify": "~0.2.5",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-shell": "~0.7.0"
+    "grunt-shell": "~0.7.0",
+    "grunt-update-json": "^0.2.2"
   }
 }
