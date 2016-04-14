@@ -2,6 +2,8 @@
 
 The most accurate sticky polyfill out in the wild.
 
+**This fork has support for bottom-positioned stickies and CommonJS module.**
+
 Check out [the demo](http://wd.dizaina.net/en/scripts/stickyfill/) and [use cases test page](http://wilddeer.github.io/stickyfill/test/).
 
 ###What it does
