@@ -5,7 +5,22 @@
  *
  * MIT License
  */
-(function(doc, win) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.Stickyfill = factory();
+  }
+}(this, function () {
+    var doc = document;
+    var win = window;
     var watchArray = [],
         scroll,
         initialized = false,
@@ -463,7 +478,7 @@
     }
 
     //expose Stickyfill
-    win.Stickyfill = {
+    return {
         stickies: watchArray,
         add: add,
         remove: remove,
@@ -473,8 +488,7 @@
         stop: stop,
         kill: kill
     };
-})(document, window);
-
+}));
 
 //if jQuery is available -- create a plugin
 if (window.jQuery) {
