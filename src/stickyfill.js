@@ -187,6 +187,7 @@
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
+                nodeStyle.willChange = 'position';
                 break;
 
             case 1:
@@ -199,6 +200,7 @@
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
+                nodeStyle.willChange = 'auto';
                 break;
 
             case 2:
@@ -210,6 +212,7 @@
                 nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
+                nodeStyle.willChange = 'position';
                 break;
         }
 
