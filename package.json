@@ -1,16 +1,19 @@
 {
-  "name": "Stickyfill",
-  "version": "1.2.0",
+  "name": "stickyfill",
+  "version": "1.3.0",
   "license": "MIT",
-  "homepage": "https://github.com/wilddeer/stickyfill",
+  "homepage": "https://github.com/kibin/stickyfill",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wilddeer/stickyfill.git"
+    "url": "https://github.com/kibin/stickyfill.git"
   },
   "author": {
     "name": "Oleg Korsunsky",
     "url": "http://wd.dizaina.net/"
   },
+  "contributors": [{
+    "name": "kibin"
+  }],
   "main": "dist/stickyfill.js",
   "devDependencies": {
     "grunt": "~0.4.1",
