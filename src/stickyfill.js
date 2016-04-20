@@ -6,7 +6,7 @@
  * MIT License
  */
 
-module.exports = (function(doc, win) {
+module.exports = (function(params, doc, win) {
     if (!doc) {
         doc = document;
     }
@@ -218,7 +218,7 @@ module.exports = (function(doc, win) {
     }
 
     function clone(el) {
-        el.clone = document.createElement('div');
+        el.clone = document.createElement(params.tagName || 'div');
 
         var refElement = el.node.nextSibling || el.node,
             cloneStyle = el.clone.style;
