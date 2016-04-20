@@ -30,7 +30,7 @@ For more detailed information, see the [original Readme.md file](https://github.
 
 ## Acknowledgements
 
-Thanks to Oleg Korsunsky ([@wilddeer](https://github.com/wilddeer)), for the excelent polyfill implementation. @wilddeer, if you have any suggestions/comments on the way this is bundled, or want contributor access to this repo or to `npm`, just create an issue and we'll add you. ;)
+Thanks to Oleg Korsunsky ([@wilddeer](https://github.com/wilddeer)), for the excelent polyfill implementation.
 
 ## License
 
