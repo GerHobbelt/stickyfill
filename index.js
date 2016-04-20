@@ -14,7 +14,7 @@ module.exports = (function(params, doc, win) {
     if (!win) {
         win = window;
     }
-    
+
     var watchArray = [],
         scroll,
         initialized = false,
@@ -80,7 +80,7 @@ module.exports = (function(params, doc, win) {
             rebuild();
             return;
         }
-        
+
         if (win.pageYOffset != scroll.top) {
             updateScrollPos();
             recalcAllPos();
@@ -280,7 +280,7 @@ module.exports = (function(params, doc, win) {
             },
             nodeOffset = getElementOffset(node),
             parentOffset = getElementOffset(parentNode),
-            
+
             parent = {
                 node: parentNode,
                 css: {
@@ -396,11 +396,11 @@ module.exports = (function(params, doc, win) {
         if (!initialized) return;
 
         deinitAll();
-        
+
         for (var i = watchArray.length - 1; i >= 0; i--) {
             watchArray[i] = getElementParams(watchArray[i].node);
         }
-        
+
         initAll();
     }
 
@@ -418,7 +418,7 @@ module.exports = (function(params, doc, win) {
 
     function stop() {
         pause();
-        deinitAll(); 
+        deinitAll();
     }
 
     function kill() {
