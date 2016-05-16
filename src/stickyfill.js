@@ -286,7 +286,8 @@
                 width: node.style.width,
                 marginTop: node.style.marginTop,
                 marginLeft: node.style.marginLeft,
-                marginRight: node.style.marginRight
+                marginRight: node.style.marginRight,
+                willChange: node.style.willChange
             },
             nodeOffset = getElementOffset(node),
             parentOffset = getElementOffset(parentNode),
