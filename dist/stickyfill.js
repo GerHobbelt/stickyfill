@@ -1,6 +1,6 @@
 /*!
  * Stickyfill -- `position: sticky` polyfill
- * v. 1.1.6-0 | https://github.com/wilddeer/stickyfill
+ * v. 1.1.7-0 | https://github.com/wilddeer/stickyfill
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * MIT License
@@ -293,7 +293,8 @@
                 width: node.style.width,
                 marginTop: node.style.marginTop,
                 marginLeft: node.style.marginLeft,
-                marginRight: node.style.marginRight
+                marginRight: node.style.marginRight,
+                willChange: node.style.willChange
             },
             nodeOffset = getElementOffset(node),
             parentOffset = getElementOffset(parentNode),
