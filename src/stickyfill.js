@@ -120,7 +120,11 @@ if (0) {
             recalcAllPos();
         }
 
-        watchArray.forEach(forceRedraw);
+        // only execute this stuff on those (buggy) browsers that need it 
+        // as it slows down others tremendously, e.g. MSIE 11/Edge!
+        if (0) {
+            watchArray.forEach(forceRedraw);
+        }
     }
 
     // fixes flickering

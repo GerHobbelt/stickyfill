@@ -143,7 +143,9 @@ if (0) {
             recalcAllPos();
         }
 
-        watchArray.forEach(forceRedraw);
+        if (0) {
+            watchArray.forEach(forceRedraw);
+        }
     }
 
     // fixes flickering
