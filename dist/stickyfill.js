@@ -5,7 +5,21 @@
  *
  * MIT License
  */
+// This fork of the original stickyfill (https://github.com/wilddeer/stickyfill) lib comes from
+//     https://github.com/google/ggrc-core/blob/develop/src/ggrc/assets/vendor/javascripts/stickyfill.js
+// Several jshint warnings were removed.
+//
+// Also of note: React rendering during testing uses a detached DOM node. This was causing issues with stickyfill
+// because in 2 places (lines 314 and 549) the DOM is traversed upwards until the document is reached. In a detached
+// DOM node, the document is never reached. In these instances I manually jump to the body to continue traversal.
+
+// Modified killClone to guard against the parent node not existing anymore - this is most likely a bandaid rather
+// than the proper solution, but it would seem to make sense that the clone's parent could be swooped from underneath
+// it because of React / Morearty.
+
 (function(doc, win) {
+    'use strict';
+
     var watchArray = [],
         boundingElements = [{node: win}],
         initialized = false,
@@ -16,6 +30,16 @@
         //visibility API strings
         hiddenPropertyName = 'hidden',
         visibilityChangeEventName = 'visibilitychange';
+
+    // This fixes an issue in Chrome on Mac Retina screens
+    // sticky elements have to be forcefully redrawn,
+    // otherwise they are there, but invisible
+    function forceRedraw(el) {
+        var display = el.node.style.display;
+        el.node.style.display = 'none';
+        el.node.offsetHeight; // this is important
+        el.node.style.display = display;
+    }
 
     //fallback to prefixed names in old webkit browsers
     if (doc.webkitHidden !== undefined) {
@@ -38,7 +62,8 @@ if (0) {
         try {
             block.style.position = prefixes[i] + 'sticky';
         }
-        catch(e) {}
+        catch (e) {
+        }
         if (block.style.position != '') {
             seppuku();
         }
@@ -99,6 +124,8 @@ if (0) {
             updateScrollPos();
             recalcAllPos();
         }
+
+        watchArray.forEach(forceRedraw);
     }
 
     //fixes flickering
@@ -106,7 +133,7 @@ if (0) {
         var el = event.currentTarget,
             cached = getBoundingElement(el);
 
-        setTimeout(function() {
+        setTimeout(function () {
 	    var offsets = getOffset(el);
             if (offsets.top != cached.scroll.top) {
                 cached.scroll.top = offsets.top;
@@ -130,7 +157,7 @@ if (0) {
                 width: win.innerWidth || win.clientWidth,
                 height: win.innerHeight || win.clientHeight
             };
-        }else{
+        } else {
             return node.getBoundingClientRect();
         }
     }
@@ -182,7 +209,9 @@ if (0) {
     function deinitElement(el) {
         var deinitParent = true;
 
-        el.clone && killClone(el);
+        if (el.clone) {
+            killClone(el);
+        }
         mergeObjects(el.node.style, el.css);
 
         //check whether element's parent is used by other stickies
@@ -191,7 +220,7 @@ if (0) {
                 deinitParent = false;
                 break;
             }
-        };
+        }
 
         if (deinitParent) el.parent.node.style.position = el.parent.css.position;
         el.mode = -1;
@@ -272,7 +301,7 @@ if (0) {
     }
 
     function killClone(el) {
-        if (el.clone.parentNode != null) {
+        if (el.clone.parentNode) {
             el.clone.parentNode.removeChild(el.clone);
         }
         el.clone = undefined;
@@ -288,12 +317,14 @@ if (0) {
         for (var i = 0; i < boundingElements.length; i++) {
             el = boundingElements[i];
 
-            if (el.node == node) {
+            if (el.node === node) {
                 return el;
             }
         }
-        
-        return findBoundingElement(node.parentNode);
+	
+        // For React rendering during tests. React is rendering in a detached DOM node
+        // So during rendering we can land here without the proper path up to the document (a DIV with no parent)
+        return findBoundingElement(node.parentNode ? node.parentNode : document.getElementsByTagName('body')[0]);
     }
 
     function getElementParams(node) {
@@ -400,7 +431,7 @@ if (0) {
             boundingBox = getBoundingBox(findBoundingElement(node).node);
         }
 
-        return docOffsetTop+boundingBox.top;
+        return docOffsetTop + boundingBox.top;
     }
 
     function getElementOffset(node) {
@@ -417,8 +448,10 @@ if (0) {
     }
 
     function startFastCheckTimer() {
-        checkTimer = setInterval(function() {
-            !fastCheck() && rebuild();
+        checkTimer = setInterval(function () {
+            if (!fastCheck()) {
+                rebuild();
+            }
         }, 500);
     }
 
@@ -527,17 +560,19 @@ if (0) {
 			node: parent,
                         scroll: getOffset(parent)
 		});
-            }
-
-            parent = parent.parentNode;
+            } 
+	    
+            // For React rendering during tests. React is rendering in a detached DOM node
+            // So during rendering we can land here without the proper path up to the document (a DIV with no parent)
+            parent = parent.parentNode ? parent.parentNode : document.getElementsByTagName('body')[0];
         }
     }
 
     function add(node) {
-        //check if Stickyfill is already applied to the node
+        // check if Stickyfill is already applied to the node
         for (var i = watchArray.length - 1; i >= 0; i--) {
             if (watchArray[i].node === node) return;
-        };
+        }
 
         var el = getElementParams(node);
 
@@ -558,10 +593,10 @@ if (0) {
                 deinitElement(watchArray[i]);
                 watchArray.splice(i, 1);
             }
-        };
+        }
     }
 
-    //expose Stickyfill
+    // expose Stickyfill
     win.Stickyfill = {
         stickies: watchArray,
         add: add,
