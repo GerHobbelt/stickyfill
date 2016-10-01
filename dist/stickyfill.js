@@ -45,7 +45,7 @@
         noop = function() {},
         checkTimer,
 
-    // visibility API strings
+        // visibility API strings
         hiddenPropertyName = 'hidden',
         visibilityChangeEventName = 'visibilitychange';
 
@@ -70,9 +70,9 @@
         seppuku();
     }
 
-// disable this piece of code for the time being; minifiers/.optimizers will kill this chunk...
+// disable this piece of code for the time being; minifiers/optimizers will kill this chunk...
 if (0) {
-    //test for native support
+    // test for native support
     var prefixes = ['', '-webkit-', '-moz-', '-ms-'],
         block = doc.createElement('div');
 
@@ -90,7 +90,7 @@ if (0) {
 
     updateScrollPos();
 
-    //commit seppuku!
+    // commit seppuku!
     function seppuku() {
         init = add = rebuild = pause = stop = kill = noop;
     }
@@ -130,7 +130,7 @@ if (0) {
     function onScroll(event) {
         var el = event.currentTarget,
             cached = getBoundingElement(el),
-	    offsets = getOffset(el);
+            offsets = getOffset(el);
 
         if (offsets.left != cached.scroll.left) {
             updateScrollPos();
@@ -146,13 +146,13 @@ if (0) {
         watchArray.forEach(forceRedraw);
     }
 
-    //fixes flickering
+    // fixes flickering
     function onWheel(event) {
         var el = event.currentTarget,
             cached = getBoundingElement(el);
 
         setTimeout(function () {
-	    var offsets = getOffset(el);
+            var offsets = getOffset(el);
             if (offsets.top != cached.scroll.top) {
                 cached.scroll.top = offsets.top;
                 recalcAllPos();
@@ -168,7 +168,7 @@ if (0) {
 
     function getBoundingBox(node) {
         if (node === win || !node) {
-	    var offsets = getOffset(node);
+            var offsets = getOffset(node);
             var rv = {
                 top: offsets.top,
                 left: offsets.left,
@@ -176,7 +176,7 @@ if (0) {
                 width: window.innerWidth || window.clientWidth,
                 height: window.innerHeight || window.clientHeight
             };
-	    rv.bottom = rv.top + rv.height;
+            rv.bottom = rv.top + rv.height;
 
             rv = {
                 top: 0,
@@ -185,7 +185,7 @@ if (0) {
                 width: win.innerWidth || win.clientWidth,
                 height: win.innerHeight || win.clientHeight
             };
-	    return rv;
+            return rv;
         } else {
             return node.getBoundingClientRect();
         }
@@ -198,14 +198,14 @@ if (0) {
             edge = boundingElement.scroll.top + getBoundingBox(boundingElement.node).top;
 
         var currentMode = (edge <= el.limit.start ? 0 : edge >= el.limit.end ? 2 : 1);
-	console.log('mode: ', currentMode, edge, el.limit.start, el.limit.end, boundingElement.scroll.top, getBoundingBox(boundingElement.node));
+        //console.log('mode: ', currentMode, edge, el.limit.start, el.limit.end, boundingElement.scroll.top, getBoundingBox(boundingElement.node));
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
         }
     }
 
-    //checks whether stickies start or stop positions have changed
+    // checks whether stickies start or stop positions have changed
     function fastCheck() {
         for (var i = watchArray.length - 1; i >= 0; i--) {
             if (!watchArray[i].inited) continue;
@@ -226,7 +226,7 @@ if (0) {
         if (!el.clone) clone(el);
         if (el.parent.computed.position != 'absolute' &&
             el.parent.computed.position != 'relative' &&
-            el.parent.node.tagName.toLowerCase() != 'body') { 
+            el.parent.node.tagName.toLowerCase() != 'body') {
                 el.parent.node.style.position = 'relative';
         }
 
@@ -244,7 +244,7 @@ if (0) {
         }
         mergeObjects(el.node.style, el.css);
 
-        //check whether element's parent is used by other stickies
+        // check whether element's parent is used by other stickies
         for (var i = watchArray.length - 1; i >= 0; i--) {
             if (watchArray[i].node !== el.node && watchArray[i].parent.node === el.parent.node) {
                 deinitParent = false;
@@ -346,7 +346,7 @@ if (0) {
         }
 
         var el;
-        
+
         for (var i = 0; i < boundingElements.length; i++) {
             el = boundingElements[i];
 
@@ -354,7 +354,7 @@ if (0) {
                 return el;
             }
         }
-	
+
         // For React rendering during tests. React is rendering in a detached DOM node
         // So during rendering we can land here without the proper path up to the document (a DIV with no parent)
         return findBoundingElement(node.parentNode ? node.parentNode : document.getElementsByTagName('body')[0]);
@@ -419,7 +419,7 @@ if (0) {
                     borderTopWidth: parseNumeric(parentComputedStyle.borderTopWidth),
                     borderBottomWidth: parseNumeric(parentComputedStyle.borderBottomWidth)
                 }
-            },        
+            },
 
             el = {
                 node: node,
@@ -454,7 +454,7 @@ if (0) {
     function getDocOffsetTop(node) {
         return getPosition(node).y;
 
-        var docOffsetTop = 0, 
+        var docOffsetTop = 0,
             boundingBox = {top: 0};
 
         if (node) {
@@ -470,18 +470,18 @@ if (0) {
     }
 
     // Helper function to get an element's exact position
-    // 
+    //
     // https://www.kirupa.com/html5/get_element_position_using_javascript.htm
     function getPosition(el) {
       var xPos = 0;
       var yPos = 0;
-     
+
       while (el) {
         if (el.tagName == "BODY") {
           // deal with browser quirks with body/window/document and page scroll
           var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
           var yScroll = el.scrollTop || document.documentElement.scrollTop;
-     
+
           xPos += (el.offsetLeft - xScroll + el.clientLeft);
           yPos += (el.offsetTop - yScroll + el.clientTop);
         } else {
@@ -489,7 +489,7 @@ if (0) {
           xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
           yPos += (el.offsetTop - el.scrollTop + el.clientTop);
         }
-     
+
         el = el.offsetParent;
       }
       return {
@@ -500,7 +500,7 @@ if (0) {
 
     function getElementOffset(node) {
         var box = getBoundingBox(node),
-	    offsets = getOffset(node);
+            offsets = getOffset(node);
 
         return {
             doc: {
@@ -543,13 +543,13 @@ if (0) {
         boundingElements.map(function (el) {
             el.node.addEventListener('scroll', onScroll);
             el.node.addEventListener('wheel', onWheel);
-            
-            //watch for width changes
+
+            // watch for width changes
             el.node.addEventListener('resize', rebuild);
             el.node.addEventListener('orientationchange', rebuild);
         });
 
-        //watch for page visibility
+        // watch for page visibility
         doc.addEventListener(visibilityChangeEventName, handlePageVisibilityChange);
 
         startFastCheckTimer();
@@ -591,8 +591,8 @@ if (0) {
     function kill() {
         stop();
 
-        //empty the array without loosing the references,
-        //the most performant method according to http://jsperf.com/empty-javascript-array
+        // empty the array without loosing the references,
+        // the most performant method according to http://jsperf.com/empty-javascript-array
         while (watchArray.length) {
             watchArray.pop();
         }
@@ -613,7 +613,7 @@ if (0) {
     function addBoundingElements(node) {
         var parent = node.parentNode;
 
-        while (parent != doc) {            
+        while (parent != doc) {
             if (isOverflown(parent)) {
                 // only add once
                 for (var i = 0; i < boundingElements.length; i++) {
@@ -621,11 +621,11 @@ if (0) {
                 }
 
                 boundingElements.push({
-			node: parent,
-                        scroll: getOffset(parent)
-		});
-            } 
-	    
+                    node: parent,
+                    scroll: getOffset(parent)
+                });
+            }
+
             // For React rendering during tests. React is rendering in a detached DOM node
             // So during rendering we can land here without the proper path up to the document (a DIV with no parent)
             parent = parent.parentNode ? parent.parentNode : document.getElementsByTagName('body')[0];
@@ -673,7 +673,7 @@ if (0) {
     };
 
 
-//if jQuery is available -- create a plugin
+// if jQuery is available -- create a plugin
 if (win.jQuery) {
     (function($) {
         $.fn.Stickyfill = function(options) {
