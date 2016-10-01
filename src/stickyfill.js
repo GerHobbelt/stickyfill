@@ -120,7 +120,7 @@ if (0) {
             recalcAllPos();
         }
 
-        // only execute this stuff on those (buggy) browsers that need it 
+        // only execute this stuff on those (buggy) browsers that need it
         // as it slows down others tremendously, e.g. MSIE 11/Edge!
         if (0) {
             watchArray.forEach(forceRedraw);
@@ -344,10 +344,16 @@ if (0) {
     function getElementParams(node) {
         var computedStyle = getComputedStyle(node),
             parentNode = node.parentNode,
-            parentComputedStyle = getComputedStyle(parentNode),
+            parentComputedStyle,
             cachedPosition = node.style.position,
             boundingElement = findBoundingElement(node),
             boundingOffset = getOffset(boundingElement.node);
+
+        if (parentNode.toString() === '[object ShadowRoot]') {
+            parentNode = parentNode.host;
+        }
+
+        parentComputedStyle = getComputedStyle(parentNode);
 
         node.style.position = 'relative';
 
