@@ -1,6 +1,6 @@
 /*!
  * Stickyfill -- `position: sticky` polyfill
- * v. 1.1.5-5 | https://github.com/wilddeer/stickyfill
+ * v. 1.1.5-6 | https://github.com/wilddeer/stickyfill
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * MIT License
@@ -172,24 +172,13 @@ if (0) {
 
     function getBoundingBox(node) {
         if (node === win || !node) {
-            var offsets = getOffset(node);
-            var rv = {
-                top: offsets.top,
-                left: offsets.left,
-                bottom: 0,
-                width: window.innerWidth || window.clientWidth,
-                height: window.innerHeight || window.clientHeight
-            };
-            rv.bottom = rv.top + rv.height;
-
-            rv = {
+            return {
                 top: 0,
                 left: 0,
                 bottom: 0,
                 width: win.innerWidth || win.clientWidth,
                 height: win.innerHeight || win.clientHeight
             };
-            return rv;
         } else {
             return node.getBoundingClientRect();
         }
@@ -202,7 +191,6 @@ if (0) {
             edge = boundingElement.scroll.top + getBoundingBox(boundingElement.node).top;
 
         var currentMode = (edge <= el.limit.start ? 0 : edge >= el.limit.end ? 2 : 1);
-        //console.log('mode: ', currentMode, edge, el.limit.start, el.limit.end, boundingElement.scroll.top, getBoundingBox(boundingElement.node));
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
@@ -461,51 +449,34 @@ if (0) {
         return el;
     }
 
-    function getDocOffsetTop(node) {
-        return getPosition(node).y;
-
-        var docOffsetTop = 0,
-            boundingBox = {top: 0};
-
-        if (node) {
-            boundingBox = getBoundingBox(findBoundingElement(node).node);
-        }
-
-        while (node) {
-            docOffsetTop += node.offsetTop;
-            node = node.offsetParent;
-        }
-
-        return docOffsetTop + boundingBox.top;
-    }
-
     // Helper function to get an element's exact position
     //
     // https://www.kirupa.com/html5/get_element_position_using_javascript.htm
-    function getPosition(el) {
+    function getDocOffsetTop(node) {
       var xPos = 0;
       var yPos = 0;
 
-      while (el) {
-        if (el.tagName == "BODY") {
+      while (node) {
+        if (node.tagName == "BODY") {
           // deal with browser quirks with body/window/document and page scroll
-          var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
-          var yScroll = el.scrollTop || document.documentElement.scrollTop;
+          var xScroll = node.scrollLeft || document.documentElement.scrollLeft;
+          var yScroll = node.scrollTop || document.documentElement.scrollTop;
 
-          xPos += (el.offsetLeft - xScroll + el.clientLeft);
-          yPos += (el.offsetTop - yScroll + el.clientTop);
+          xPos += (node.offsetLeft - xScroll + node.clientLeft);
+          yPos += (node.offsetTop - yScroll + node.clientTop);
         } else {
           // for all other non-BODY elements
-          xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-          yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+          xPos += (node.offsetLeft - node.scrollLeft + node.clientLeft);
+          yPos += (node.offsetTop - node.scrollTop + node.clientTop);
         }
 
-        el = el.offsetParent;
+        node = node.offsetParent;
       }
-      return {
-        x: xPos,
-        y: yPos
-      };
+      //return {
+      //  x: xPos,
+      //  y: yPos
+      //};
+      return yPos;
     }
 
     function getElementOffset(node) {
