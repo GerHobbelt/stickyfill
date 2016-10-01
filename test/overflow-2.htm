@@ -88,6 +88,11 @@
         .clearfix:after {
           clear: both;
         }
+        .overflown {
+            overflow: auto;
+            /* height: 90%;   -- do not specify a PERCENTAGE height for the overflown element for it will cause havoc due to problems with height/position calculus! */
+            height: 350px;
+        }
     </style>
 
     <title>Test</title>
@@ -96,6 +101,7 @@
 </head>
 
 <body>
+  <div class="overflown">
     <div class="arrows">
         <div>
             <button class="js-top">&#8593;</button>

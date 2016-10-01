@@ -45,7 +45,7 @@
         noop = function() {},
         checkTimer,
 
-        //visibility API strings
+    // visibility API strings
         hiddenPropertyName = 'hidden',
         visibilityChangeEventName = 'visibilitychange';
 
@@ -59,19 +59,19 @@
         el.node.style.display = display;
     }
 
-    //fallback to prefixed names in old webkit browsers
-    if (doc.webkitHidden !== undefined) {
+    // fallback to prefixed names in old webkit browsers
+    if (typeof doc.webkitHidden !== 'undefined') {
         hiddenPropertyName = 'webkitHidden';
         visibilityChangeEventName = 'webkitvisibilitychange';
     }
 
-// disable this piece of code for the time being; minifiers/.optimizers will kill this chunk...
-if (0) {
-    //test getComputedStyle
+    // test getComputedStyle
     if (!win.getComputedStyle) {
         seppuku();
     }
 
+// disable this piece of code for the time being; minifiers/.optimizers will kill this chunk...
+if (0) {
     //test for native support
     var prefixes = ['', '-webkit-', '-moz-', '-ms-'],
         block = doc.createElement('div');
@@ -168,13 +168,24 @@ if (0) {
 
     function getBoundingBox(node) {
         if (node === win || !node) {
-            return {
+	    var offsets = getOffset(node);
+            var rv = {
+                top: offsets.top,
+                left: offsets.left,
+                bottom: 0,
+                width: window.innerWidth || window.clientWidth,
+                height: window.innerHeight || window.clientHeight
+            };
+	    rv.bottom = rv.top + rv.height;
+
+            rv = {
                 top: 0,
                 left: 0,
                 bottom: 0,
                 width: win.innerWidth || win.clientWidth,
                 height: win.innerHeight || win.clientHeight
             };
+	    return rv;
         } else {
             return node.getBoundingClientRect();
         }
@@ -187,6 +198,7 @@ if (0) {
             edge = boundingElement.scroll.top + getBoundingBox(boundingElement.node).top;
 
         var currentMode = (edge <= el.limit.start ? 0 : edge >= el.limit.end ? 2 : 1);
+	console.log('mode: ', currentMode, edge, el.limit.start, el.limit.end, boundingElement.scroll.top, getBoundingBox(boundingElement.node));
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
@@ -213,8 +225,8 @@ if (0) {
 
         if (!el.clone) clone(el);
         if (el.parent.computed.position != 'absolute' &&
-            el.parent.computed.position != 'relative' /* &&
-            el.parent.node.tagName.toLowerCase() != 'body' */) { 
+            el.parent.computed.position != 'relative' &&
+            el.parent.node.tagName.toLowerCase() != 'body') { 
                 el.parent.node.style.position = 'relative';
         }
 
@@ -261,40 +273,41 @@ if (0) {
             winBounds = getBoundingBox(findBoundingElement(el.node).node);
 
         switch (mode) {
-            case 0:
-                nodeStyle.position = 'absolute';
-                nodeStyle.left = el.offset.left + 'px';
-                nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = el.offset.top + 'px';
-                nodeStyle.bottom = 'auto';
-                nodeStyle.width = 'auto';
-                nodeStyle.marginLeft = 0;
-                nodeStyle.marginRight = 0;
-                nodeStyle.marginTop = 0;
-                break;
+        case 0:
+            nodeStyle.position = 'absolute';
+            nodeStyle.left = el.offset.left + 'px';
+            nodeStyle.right = el.offset.right + 'px';
+            nodeStyle.top = el.offset.top + 'px';
+            nodeStyle.bottom = 'auto';
+            nodeStyle.width = 'auto';
+            nodeStyle.marginLeft = 0;
+            nodeStyle.marginRight = 0;
+            nodeStyle.marginTop = 0;
+            break;
 
-            case 1:
-                nodeStyle.position = 'fixed';
-                nodeStyle.left = el.box.left + 'px';
-                nodeStyle.right = el.box.right + 'px';
-                nodeStyle.top = el.numeric.top + winBounds.top + 'px';
-                nodeStyle.bottom = 'auto';
-                nodeStyle.width = el.computed.width;
-                nodeStyle.marginLeft = 0;
-                nodeStyle.marginRight = 0;
-                nodeStyle.marginTop = 0;
-                break;
+        case 1:
+            nodeStyle.position = 'fixed';
+            nodeStyle.left = el.box.left + 'px';
+            nodeStyle.right = el.box.right + 'px';
+            nodeStyle.top = el.numeric.top + winBounds.top + 'px';
+            nodeStyle.bottom = 'auto';
+            nodeStyle.width = el.computed.width;
+            nodeStyle.marginLeft = 0;
+            nodeStyle.marginRight = 0;
+            nodeStyle.marginTop = 0;
+            break;
 
-            case 2:
-                nodeStyle.position = 'absolute';
-                nodeStyle.left = el.offset.left + 'px';
-                nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = 'auto';
-                nodeStyle.bottom = 0;
-                nodeStyle.width = 'auto';
-                nodeStyle.marginLeft = 0;
-                nodeStyle.marginRight = 0;
-                break;
+        case 2:
+            nodeStyle.position = 'absolute';
+            nodeStyle.left = el.offset.left + 'px';
+            nodeStyle.right = el.offset.right + 'px';
+            nodeStyle.top = 'auto';
+            nodeStyle.bottom = 0;
+            nodeStyle.width = 'auto';
+            nodeStyle.marginLeft = 0;
+            nodeStyle.marginRight = 0;
+            nodeStyle.marginTop = 0;
+            break;
         }
 
         el.mode = mode;
@@ -439,6 +452,8 @@ if (0) {
     }
 
     function getDocOffsetTop(node) {
+        return getPosition(node).y;
+
         var docOffsetTop = 0, 
             boundingBox = {top: 0};
 
@@ -452,6 +467,35 @@ if (0) {
         }
 
         return docOffsetTop + boundingBox.top;
+    }
+
+    // Helper function to get an element's exact position
+    // 
+    // https://www.kirupa.com/html5/get_element_position_using_javascript.htm
+    function getPosition(el) {
+      var xPos = 0;
+      var yPos = 0;
+     
+      while (el) {
+        if (el.tagName == "BODY") {
+          // deal with browser quirks with body/window/document and page scroll
+          var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+          var yScroll = el.scrollTop || document.documentElement.scrollTop;
+     
+          xPos += (el.offsetLeft - xScroll + el.clientLeft);
+          yPos += (el.offsetTop - yScroll + el.clientTop);
+        } else {
+          // for all other non-BODY elements
+          xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+          yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+        }
+     
+        el = el.offsetParent;
+      }
+      return {
+        x: xPos,
+        y: yPos
+      };
     }
 
     function getElementOffset(node) {
