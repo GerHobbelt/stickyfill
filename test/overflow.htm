@@ -46,6 +46,20 @@
             color: white;
         }
 
+        .sticky--desktop {
+            display: none;
+        }
+
+        @media screen and (min-width: 60em) {
+            .sticky--desktop {
+                display: block;
+            }
+
+            .sticky--mobile {
+                display: none;
+            }
+        }
+
         .arrows {
             position: fixed;
             bottom: 10px;
@@ -882,7 +896,7 @@
 
 
     <script src="js/jquery-1.10.2.min.js"></script>
-    <script src="../src/stickyfill.js"></script>
+    <script src="../dist/stickyfill.js"></script>
 
     <script>
         $(function() {

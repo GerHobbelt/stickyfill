@@ -186,7 +186,7 @@ if (0) {
         var boundingElement = findBoundingElement(el.node),
             edge = boundingElement.scroll.top + getBoundingBox(boundingElement.node).top;
 
-        var currentMode = (edge + el.offset.top <= el.limit.start ? 0 : edge >= el.limit.end ? 2 : 1);
+        var currentMode = (edge <= el.limit.start ? 0 : edge >= el.limit.end ? 2 : 1);
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
@@ -214,7 +214,7 @@ if (0) {
         if (!el.clone) clone(el);
         if (el.parent.computed.position != 'absolute' &&
             el.parent.computed.position != 'relative' &&
-            el.parent.node.tagName != 'BODY') { 
+            el.parent.node.tagName.toLowerCase() != 'body') { 
                 el.parent.node.style.position = 'relative';
         }
 
@@ -265,8 +265,9 @@ if (0) {
                 nodeStyle.position = 'absolute';
                 nodeStyle.left = el.offset.left + 'px';
                 nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = 0;
+                nodeStyle.top = el.offset.top + 'px';
                 nodeStyle.bottom = 'auto';
+                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
@@ -290,6 +291,7 @@ if (0) {
                 nodeStyle.right = el.offset.right + 'px';
                 nodeStyle.top = 'auto';
                 nodeStyle.bottom = 0;
+                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 break;
