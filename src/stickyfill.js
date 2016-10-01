@@ -72,7 +72,7 @@
             rebuild();
             return;
         }
-        
+
         if (win.pageYOffset != scroll.top) {
             updateScrollPos();
             recalcAllPos();
@@ -176,7 +176,6 @@
                 nodeStyle.right = el.offset.right + 'px';
                 nodeStyle.top = 0;
                 nodeStyle.bottom = 'auto';
-                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
@@ -188,7 +187,6 @@
                 nodeStyle.right = el.box.right + 'px';
                 nodeStyle.top = el.css.top;
                 nodeStyle.bottom = 'auto';
-                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
@@ -200,7 +198,6 @@
                 nodeStyle.right = el.offset.right + 'px';
                 nodeStyle.top = 'auto';
                 nodeStyle.bottom = 0;
-                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 break;
@@ -277,7 +274,7 @@
             },
             nodeOffset = getElementOffset(node),
             parentOffset = getElementOffset(parentNode),
-            
+
             parent = {
                 node: parentNode,
                 css: {
@@ -393,11 +390,11 @@
         if (!initialized) return;
 
         deinitAll();
-        
+
         for (var i = watchArray.length - 1; i >= 0; i--) {
             watchArray[i] = getElementParams(watchArray[i].node);
         }
-        
+
         initAll();
     }
 
@@ -415,7 +412,7 @@
 
     function stop() {
         pause();
-        deinitAll(); 
+        deinitAll();
     }
 
     function kill() {
