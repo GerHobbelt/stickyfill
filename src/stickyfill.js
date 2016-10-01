@@ -144,7 +144,7 @@ if (0) {
     }
 
     function getBoundingBox(node) {
-        if (node === win) {
+        if (node === win || !node) {
             return {
                 top: 0,
                 left: 0,
@@ -419,13 +419,13 @@ if (0) {
         var docOffsetTop = 0, 
             boundingBox = {top: 0};
 
+        if (node) {
+            boundingBox = getBoundingBox(findBoundingElement(node).node);
+        }
+
         while (node) {
             docOffsetTop += node.offsetTop;
             node = node.offsetParent;
-        }
-
-        if (node) {
-            boundingBox = getBoundingBox(findBoundingElement(node).node);
         }
 
         return docOffsetTop + boundingBox.top;

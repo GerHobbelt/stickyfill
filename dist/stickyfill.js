@@ -167,7 +167,7 @@ if (0) {
     }
 
     function getBoundingBox(node) {
-        if (node === win) {
+        if (node === win || !node) {
             return {
                 top: 0,
                 left: 0,
@@ -213,8 +213,8 @@ if (0) {
 
         if (!el.clone) clone(el);
         if (el.parent.computed.position != 'absolute' &&
-            el.parent.computed.position != 'relative' &&
-            el.parent.node.tagName.toLowerCase() != 'body') { 
+            el.parent.computed.position != 'relative' /* &&
+            el.parent.node.tagName.toLowerCase() != 'body' */) { 
                 el.parent.node.style.position = 'relative';
         }
 
@@ -442,13 +442,13 @@ if (0) {
         var docOffsetTop = 0, 
             boundingBox = {top: 0};
 
+        if (node) {
+            boundingBox = getBoundingBox(findBoundingElement(node).node);
+        }
+
         while (node) {
             docOffsetTop += node.offsetTop;
             node = node.offsetParent;
-        }
-
-        if (node) {
-            boundingBox = getBoundingBox(findBoundingElement(node).node);
         }
 
         return docOffsetTop + boundingBox.top;
