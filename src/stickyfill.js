@@ -426,34 +426,20 @@ if (0) {
         return el;
     }
 
-    // Helper function to get an element's exact position
-    //
-    // https://www.kirupa.com/html5/get_element_position_using_javascript.htm
     function getDocOffsetTop(node) {
-      var xPos = 0;
-      var yPos = 0;
+        var docOffsetTop = 0,
+            boundingBox = {top: 0};
 
-      while (node) {
-        if (node.tagName == "BODY") {
-          // deal with browser quirks with body/window/document and page scroll
-          var xScroll = node.scrollLeft || document.documentElement.scrollLeft;
-          var yScroll = node.scrollTop || document.documentElement.scrollTop;
-
-          xPos += (node.offsetLeft - xScroll + node.clientLeft);
-          yPos += (node.offsetTop - yScroll + node.clientTop);
-        } else {
-          // for all other non-BODY elements
-          xPos += (node.offsetLeft - node.scrollLeft + node.clientLeft);
-          yPos += (node.offsetTop - node.scrollTop + node.clientTop);
+        if (node) {
+            boundingBox = getBoundingBox(findBoundingElement(node).node);
         }
 
-        node = node.offsetParent;
-      }
-      //return {
-      //  x: xPos,
-      //  y: yPos
-      //};
-      return yPos;
+        while (node) {
+            docOffsetTop += node.offsetTop;
+            node = node.offsetParent;
+        }
+
+        return docOffsetTop + boundingBox.top;
     }
 
     function getElementOffset(node) {
