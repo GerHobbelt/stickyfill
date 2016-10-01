@@ -1,10 +1,26 @@
 /*!
  * Stickyfill -- `position: sticky` polyfill
- * v. 1.1.2 | https://github.com/wilddeer/stickyfill
+ * v. 1.1.4 | https://github.com/wilddeer/stickyfill
  * Copyright Oleg Korsunsky | http://wd.dizaina.net/
  *
  * MIT License
  */
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module unless amdModuleId is set
+    define([], function () {
+      return (factory());
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory();
+  } else {
+    root['Stickyfill'] = factory();
+  }
+}(this, function () {
+
 //This fork of the original stickyfill (https://github.com/wilddeer/stickyfill) lib comes from
 // https://github.com/google/ggrc-core/blob/develop/src/ggrc/assets/vendor/javascripts/stickyfill.js
 //It has been converted to work as a module and several jshint warnings were removed.
@@ -18,17 +34,9 @@
 
 'use strict';
 
-module.exports = (function (doc, _win) {
-
-    if (!doc) {
-        doc = document;
-    }
-    if (!_win) {
-        _win = window;
-    }
-
-
-    var watchArray = [],
+    var _win = window,
+        doc = document,
+        watchArray = [],
         boundingElements = [{node: _win}],
         initialized = false,
         html = doc.documentElement,
@@ -36,9 +44,9 @@ module.exports = (function (doc, _win) {
         },
         checkTimer,
 
-    //visibility API strings
-        hiddenPropertyName = 'hidden',
-        visibilityChangeEventName = 'visibilitychange';
+    // visibility API strings
+    hiddenPropertyName = 'hidden',
+    visibilityChangeEventName = 'visibilitychange';
 
     // This fixes an issue in Chrome on Mac Retina screens
     // sticky elements have to be forcefully redrawn,
@@ -50,17 +58,18 @@ module.exports = (function (doc, _win) {
         el.node.style.display = display;
     }
 
-    //fallback to prefixed names in old webkit browsers
-    if (doc.webkitHidden !== undefined) {
+    // fallback to prefixed names in old webkit browsers
+    if (typeof doc.webkitHidden !== 'undefined') {
         hiddenPropertyName = 'webkitHidden';
         visibilityChangeEventName = 'webkitvisibilitychange';
     }
 
-    //test getComputedStyle
+    // test getComputedStyle
     if (!_win.getComputedStyle) {
         seppuku();
     }
 
+if (0) {
     //test for native support
     var prefixes = ['', '-webkit-', '-moz-', '-ms-'],
         block = document.createElement('div');
@@ -75,6 +84,7 @@ module.exports = (function (doc, _win) {
             seppuku();
         }
     }
+}
 
     updateScrollPos();
 
@@ -154,13 +164,24 @@ module.exports = (function (doc, _win) {
 
     function getBoundingBox(node) {
         if (node === window) {
-            return {
+	    var offsets = getOffset(node);
+            var rv = {
+                top: offsets.top,
+                left: offsets.left,
+                bottom: 0,
+                width: window.innerWidth || window.clientWidth,
+                height: window.innerHeight || window.clientHeight
+            };
+	    rv.bottom = rv.top + rv.height;
+
+            rv = {
                 top: 0,
                 left: 0,
                 bottom: 0,
                 width: window.innerWidth || window.clientWidth,
                 height: window.innerHeight || window.clientHeight
             };
+	    return rv;
         } else {
             return node.getBoundingClientRect();
         }
@@ -173,6 +194,7 @@ module.exports = (function (doc, _win) {
             edge = boundingElement.scroll.top + getBoundingBox(boundingElement.node).top;
 
         var currentMode = (edge <= el.limit.start ? 0 : edge >= el.limit.end ? 2 : 1);
+	console.log('mode: ', currentMode, edge, el.limit.start, el.limit.end, boundingElement.scroll.top, getBoundingBox(boundingElement.node));
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
@@ -245,40 +267,41 @@ module.exports = (function (doc, _win) {
             winBounds = getBoundingBox(findBoundingElement(el.node).node);
 
         switch (mode) {
-            case 0:
-                nodeStyle.position = 'absolute';
-                nodeStyle.left = el.offset.left + 'px';
-                nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = el.offset.top + 'px';
-                nodeStyle.bottom = 'auto';
-                nodeStyle.width = 'auto';
-                nodeStyle.marginLeft = 0;
-                nodeStyle.marginRight = 0;
-                nodeStyle.marginTop = 0;
-                break;
+        case 0:
+            nodeStyle.position = 'absolute';
+            nodeStyle.left = el.offset.left + 'px';
+            nodeStyle.right = el.offset.right + 'px';
+            nodeStyle.top = el.offset.top + 'px';
+            nodeStyle.bottom = 'auto';
+            nodeStyle.width = 'auto';
+            nodeStyle.marginLeft = 0;
+            nodeStyle.marginRight = 0;
+            nodeStyle.marginTop = 0;
+            break;
 
-            case 1:
-                nodeStyle.position = 'fixed';
-                nodeStyle.left = el.box.left + 'px';
-                nodeStyle.right = el.box.right + 'px';
-                nodeStyle.top = el.numeric.top + winBounds.top + 'px';
-                nodeStyle.bottom = 'auto';
-                nodeStyle.width = el.computed.width;
-                nodeStyle.marginLeft = 0;
-                nodeStyle.marginRight = 0;
-                nodeStyle.marginTop = 0;
-                break;
+        case 1:
+            nodeStyle.position = 'fixed';
+            nodeStyle.left = el.box.left + 'px';
+            nodeStyle.right = el.box.right + 'px';
+            nodeStyle.top = el.numeric.top + winBounds.top + 'px';
+            nodeStyle.bottom = 'auto';
+            nodeStyle.width = el.computed.width;
+            nodeStyle.marginLeft = 0;
+            nodeStyle.marginRight = 0;
+            nodeStyle.marginTop = 0;
+            break;
 
-            case 2:
-                nodeStyle.position = 'absolute';
-                nodeStyle.left = el.offset.left + 'px';
-                nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = 'auto';
-                nodeStyle.bottom = 0;
-                nodeStyle.width = 'auto';
-                nodeStyle.marginLeft = 0;
-                nodeStyle.marginRight = 0;
-                break;
+        case 2:
+            nodeStyle.position = 'absolute';
+            nodeStyle.left = el.offset.left + 'px';
+            nodeStyle.right = el.offset.right + 'px';
+            nodeStyle.top = 'auto';
+            nodeStyle.bottom = 0;
+            nodeStyle.width = 'auto';
+            nodeStyle.marginLeft = 0;
+            nodeStyle.marginRight = 0;
+            nodeStyle.marginTop = 0;
+            break;
         }
 
         el.mode = mode;
@@ -413,7 +436,7 @@ module.exports = (function (doc, _win) {
                 limit: {
                     start: nodeOffset.doc.top - numeric.top + boundingOffset.top,
                     end: parentOffset.doc.top + parentNode.offsetHeight - parent.numeric.borderBottomWidth -
-                    node.offsetHeight - numeric.top - numeric.marginBottom + boundingOffset.top
+	                node.offsetHeight - numeric.top - numeric.marginBottom + boundingOffset.top
                 }
             };
 
@@ -421,6 +444,8 @@ module.exports = (function (doc, _win) {
     }
 
     function getDocOffsetTop(node) {
+        return getPosition(node).y;
+
         var docOffsetTop = 0,
             boundingBox = {top: 0};
 
@@ -434,6 +459,35 @@ module.exports = (function (doc, _win) {
         }
 
         return docOffsetTop + boundingBox.top;
+    }
+
+    // Helper function to get an element's exact position
+    // 
+    // https://www.kirupa.com/html5/get_element_position_using_javascript.htm
+    function getPosition(el) {
+      var xPos = 0;
+      var yPos = 0;
+     
+      while (el) {
+        if (el.tagName == "BODY") {
+          // deal with browser quirks with body/window/document and page scroll
+          var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+          var yScroll = el.scrollTop || document.documentElement.scrollTop;
+     
+          xPos += (el.offsetLeft - xScroll + el.clientLeft);
+          yPos += (el.offsetTop - yScroll + el.clientTop);
+        } else {
+          // for all other non-BODY elements
+          xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+          yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+        }
+     
+        el = el.offsetParent;
+      }
+      return {
+        x: xPos,
+        y: yPos
+      };
     }
 
     function getElementOffset(node) {
@@ -621,6 +675,9 @@ module.exports = (function (doc, _win) {
             };
         })(_win.jQuery);
     }
-    return Stickyfill;
-});
+// expose Stickyfill
+return Stickyfill;
 
+
+
+}));
