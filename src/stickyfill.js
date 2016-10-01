@@ -1,3 +1,8 @@
+/*
+ * FROM:
+ * https://github.com/wilddeer/stickyfill/blob/master/src/stickyfill.js
+ */
+
 (function(doc, win) {
     var watchArray = [],
         scroll,
@@ -93,7 +98,7 @@
     function recalcElementPos(el) {
         if (!el.inited) return;
 
-        var currentMode = (scroll.top <= el.limit.start? 0: scroll.top >= el.limit.end? 2: 1);
+        var currentMode = (scroll.top + el.offset.top <= el.limit.start ? 0: scroll.top >= el.limit.end? 2: 1);
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
@@ -169,7 +174,7 @@
                 nodeStyle.position = 'absolute';
                 nodeStyle.left = el.offset.left + 'px';
                 nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = el.offset.top + 'px';
+                nodeStyle.top = 0;
                 nodeStyle.bottom = 'auto';
                 nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
