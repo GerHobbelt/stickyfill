@@ -10,10 +10,12 @@
 // than the proper solution, but it would seem to make sense that the clone's parent could be swooped from underneath
 // it because of React / Morearty.
 
-(function(doc, win) {
+
     'use strict';
 
-    var watchArray = [],
+    var win = window,
+        doc = document,
+        watchArray = [],
         boundingElements = [{node: win}],
         initialized = false,
         html = doc.documentElement,
@@ -589,8 +591,8 @@ if (0) {
         }
     }
 
-    // expose Stickyfill
-    win.Stickyfill = {
+    // define Stickyfill
+    var Stickyfill = {
         stickies: watchArray,
         add: add,
         remove: remove,
@@ -600,11 +602,10 @@ if (0) {
         stop: stop,
         kill: kill
     };
-})(document, window);
 
 
 //if jQuery is available -- create a plugin
-if (window.jQuery) {
+if (win.jQuery) {
     (function($) {
         $.fn.Stickyfill = function(options) {
             this.each(function() {
@@ -613,5 +614,9 @@ if (window.jQuery) {
 
             return this;
         };
-    })(window.jQuery);
+    })(win.jQuery);
 }
+
+// expose Stickyfill
+return Stickyfill;
+
