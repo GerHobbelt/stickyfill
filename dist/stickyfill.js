@@ -278,7 +278,7 @@ if (0) {
                 nodeStyle.right = el.box.right + 'px';
                 nodeStyle.top = el.numeric.top + winBounds.top + 'px';
                 nodeStyle.bottom = 'auto';
-                //nodeStyle.width = el.computed.width;
+                nodeStyle.width = el.computed.width;
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
