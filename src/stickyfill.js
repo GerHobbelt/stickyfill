@@ -21,6 +21,8 @@
         visibilityChangeEventName = 'webkitvisibilitychange';
     }
 
+// disable this piece of code for the time being; minifiers/.optimizers will kill this chunk...
+if (0) {
     //test getComputedStyle
     if (!win.getComputedStyle) {
         seppuku();
@@ -39,6 +41,7 @@
             seppuku();
         }
     }
+}
 
     updateScrollPos();
 

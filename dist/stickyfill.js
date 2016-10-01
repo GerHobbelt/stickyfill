@@ -5,6 +5,11 @@
  *
  * MIT License
  */
+/*
+ * FROM:
+ * https://github.com/wilddeer/stickyfill/blob/master/src/stickyfill.js
+ */
+
 (function(doc, win) {
     var watchArray = [],
         scroll,
@@ -23,6 +28,8 @@
         visibilityChangeEventName = 'webkitvisibilitychange';
     }
 
+// disable this piece of code for the time being; minifiers/.optimizers will kill this chunk...
+if (0) {
     //test getComputedStyle
     if (!win.getComputedStyle) {
         seppuku();
@@ -41,6 +48,7 @@
             seppuku();
         }
     }
+}
 
     updateScrollPos();
 
@@ -74,7 +82,7 @@
             rebuild();
             return;
         }
-        
+
         if (win.pageYOffset != scroll.top) {
             updateScrollPos();
             recalcAllPos();
@@ -100,7 +108,7 @@
     function recalcElementPos(el) {
         if (!el.inited) return;
 
-        var currentMode = (scroll.top <= el.limit.start? 0: scroll.top >= el.limit.end? 2: 1);
+        var currentMode = (scroll.top + el.offset.top <= el.limit.start ? 0: scroll.top >= el.limit.end? 2: 1);
 
         if (el.mode != currentMode) {
             switchElementMode(el, currentMode);
@@ -176,9 +184,8 @@
                 nodeStyle.position = 'absolute';
                 nodeStyle.left = el.offset.left + 'px';
                 nodeStyle.right = el.offset.right + 'px';
-                nodeStyle.top = el.offset.top + 'px';
+                nodeStyle.top = 0;
                 nodeStyle.bottom = 'auto';
-                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
@@ -190,7 +197,6 @@
                 nodeStyle.right = el.box.right + 'px';
                 nodeStyle.top = el.css.top;
                 nodeStyle.bottom = 'auto';
-                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 nodeStyle.marginTop = 0;
@@ -202,7 +208,6 @@
                 nodeStyle.right = el.offset.right + 'px';
                 nodeStyle.top = 'auto';
                 nodeStyle.bottom = 0;
-                nodeStyle.width = 'auto';
                 nodeStyle.marginLeft = 0;
                 nodeStyle.marginRight = 0;
                 break;
@@ -232,7 +237,9 @@
     }
 
     function killClone(el) {
-        el.clone.parentNode.removeChild(el.clone);
+        if (el.clone.parentNode != null) {
+            el.clone.parentNode.removeChild(el.clone);
+        }
         el.clone = undefined;
     }
 
@@ -277,7 +284,7 @@
             },
             nodeOffset = getElementOffset(node),
             parentOffset = getElementOffset(parentNode),
-            
+
             parent = {
                 node: parentNode,
                 css: {
@@ -393,11 +400,11 @@
         if (!initialized) return;
 
         deinitAll();
-        
+
         for (var i = watchArray.length - 1; i >= 0; i--) {
             watchArray[i] = getElementParams(watchArray[i].node);
         }
-        
+
         initAll();
     }
 
@@ -415,7 +422,7 @@
 
     function stop() {
         pause();
-        deinitAll(); 
+        deinitAll();
     }
 
     function kill() {
